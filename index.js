@@ -4,9 +4,6 @@ const url = require('url');
 const slugify = require('slugify');
 const replaceTemplate = require('./modules/replaceTemplate');
 
-///////////////////////////////////
-////SERVER
-
 const tempOverview = fs.readFileSync(
   `${__dirname}/templates/template-overview.html`,
   'utf-8'
@@ -19,8 +16,6 @@ const tempProduct = fs.readFileSync(
   `${__dirname}/templates/template-product.html`,
   'utf-8'
 );
-// this code is at the top level and outside the call back, thus it will be
-// executed only once -> so, synchronous code can be used
 
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`);
 const dataObj = JSON.parse(data);
