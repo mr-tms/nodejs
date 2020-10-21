@@ -2,58 +2,27 @@ const fs = require('fs');
 const http = require('http');
 const url = require('url');
 const slugify = require('slugify');
-const replaceTemplate = require('./starter/modules/replaceTemplate');
-
-/////////////////////////////////
-////FILES
-
-// Blocking, synchronous way i.e each statement is processed one after another
-// const textIn = fs.readFileSync('./starter/txt/input.txt', 'utf-8');
-// console.log(textIn);
-
-// const textOut = `This is what we know about the avocado: ${textIn}.\nCreated on ${Date.now()}`;
-// fs.writeFileSync('./starter/txt/output.txt', textOut);
-
-// console.log('File written');
-
-// Non-blocking, asynchronous way i.e. starts reading file in a background
-// and moves to another line.
-// When reading is done, callback function is called with that data.
-
-// fs.readFile('./starter/txt/start.txt', 'utf-8', (err, data1) => {
-//   if (err) return console.log('Error');
-
-//   fs.readFile(`./starter/txt/${data1}.txt`, 'utf-8', (err, data2) => {
-//     console.log(data2);
-//     fs.readFile(`./starter/txt/append.txt`, 'utf-8', (err, data3) => {
-//       console.log(data3);
-//       fs.writeFile('./starter/txt/final.txt', `${data2}\n${data3}`, 'utf-8', err => {
-//         console.log('Your file has been written.')
-//       })
-//     });
-//   });
-// });
-// console.log('Will read file!');
+const replaceTemplate = require('./modules/replaceTemplate');
 
 ///////////////////////////////////
 ////SERVER
 
 const tempOverview = fs.readFileSync(
-  `${__dirname}/starter/templates/template-overview.html`,
+  `${__dirname}/templates/template-overview.html`,
   'utf-8'
 );
 const tempCard = fs.readFileSync(
-  `${__dirname}/starter/templates/template-card.html`,
+  `${__dirname}/templates/template-card.html`,
   'utf-8'
 );
 const tempProduct = fs.readFileSync(
-  `${__dirname}/starter/templates/template-product.html`,
+  `${__dirname}/templates/template-product.html`,
   'utf-8'
 );
 // this code is at the top level and outside the call back, thus it will be
 // executed only once -> so, synchronous code can be used
 
-const data = fs.readFileSync(`${__dirname}/final/dev-data/data.json`);
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`);
 const dataObj = JSON.parse(data);
 
 const slugs = dataObj.map((el) => slugify(el.productName, { lower: true }));
