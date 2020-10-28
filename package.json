@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/mr-tms/nodejs.git"
   },
-  "author": "mr-tms marijus@tumosa.lt",
+  "author": "mr-tms <marijus@tumosa.lt>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/mr-tms/nodejs/issues"

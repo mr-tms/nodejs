@@ -14,6 +14,7 @@ module.exports = {
     'semi': ['error', 'always'],
     'quotes': ['error', 'single'],
     'eol-last': ['error', 'always'],
-    'no-console': ['error', { 'allow': ['warn', 'error', 'info', 'group'] }]
+    'no-console': ['error', { 'allow': ['warn', 'error', 'info', 'group'] }],
+    'comma-dangle': ['error', 'always'],
   },
 };
