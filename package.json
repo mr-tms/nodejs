@@ -7,7 +7,9 @@
     "start": "nodemon ./src/server.ts",
     "test": "npm test",
     "build": "rimraf ./build && tsc",
-    "start:prod": "npm run build && node build/server.js"
+    "start:prod": "npm run build && node build/server.js",
+    "lint": "eslint . --ext .ts",
+    "lint-and-fix": "eslint . --ext .ts --fix"
   },
   "repository": {
     "type": "git",
@@ -25,7 +27,11 @@
     "mongoose": "^5.10.15"
   },
   "devDependencies": {
+    "@types/express": "^4.17.11",
+    "@types/mongoose": "^5.10.3",
     "@types/node": "^14.14.22",
+    "@typescript-eslint/eslint-plugin": "^4.14.2",
+    "@typescript-eslint/parser": "^4.14.2",
     "eslint": "^7.12.1",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.1",
