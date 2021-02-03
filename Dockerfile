@@ -10,7 +10,7 @@ FROM base as production
 ENV NODE_ENV=production
 RUN npm install --production
 
-CMD ["node", "index.js"]
+CMD ["node", "server.js"]
 
 FROM base as dev
 
