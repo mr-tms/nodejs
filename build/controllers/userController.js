@@ -35,36 +35,43 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var User = require("../models/userModel");
-exports.getAllUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createUser = exports.getAllUsers = void 0;
+var userModel_1 = __importDefault(require("../models/userModel"));
+var getAllUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var users;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, User.find()];
+            case 0: return [4 /*yield*/, userModel_1.default.find()];
             case 1:
                 users = _a.sent();
                 res.status(200).json({
-                    status: "success",
-                    data: { users: users },
+                    status: 'success',
+                    data: { users: users }
                 });
                 return [2 /*return*/];
         }
     });
 }); };
-exports.createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+exports.getAllUsers = getAllUsers;
+var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var newUser;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, User.create(req.body)];
+            case 0: return [4 /*yield*/, userModel_1.default.create(req.body)];
             case 1:
                 newUser = _a.sent();
                 res.status(201).json({
-                    status: "success",
+                    status: 'success',
                     data: {
-                        user: newUser,
-                    },
+                        user: newUser
+                    }
                 });
                 return [2 /*return*/];
         }
     });
 }); };
+exports.createUser = createUser;

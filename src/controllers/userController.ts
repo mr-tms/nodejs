@@ -1,6 +1,7 @@
-const User = require('../models/userModel');
+import { Request, Response } from 'express';
+import User from '../models/userModel';
 
-exports.getAllUsers = async (req, res) => {
+export const getAllUsers = async (_req: Request, res: Response): Promise<void> => {
   const users = await User.find();
 
   res.status(200).json({
@@ -9,7 +10,7 @@ exports.getAllUsers = async (req, res) => {
   });
 };
 
-exports.createUser = async (req, res) => {
+export const createUser = async (req: Request, res: Response): Promise<void> => {
   const newUser = await User.create(req.body);
 
   res.status(201).json({
