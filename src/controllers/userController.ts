@@ -5,18 +5,18 @@ export const getAllUsers = async (_req: Request, res: Response): Promise<void> =
   const users = await User.find();
 
   res.status(200).json({
-    status: 'success',
-    data: { users }
+    data: users
   });
 };
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
-  const newUser = await User.create(req.body);
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      user: newUser
-    }
-  });
+  try {
+    const newUser = await User.create(req.body);
+    res
+      .append('Content-Location', `/api/v1/users/${newUser._id}`)
+      .status(201)
+      .end();
+  } catch (error) {
+    res.json(error.message);
+  }
 };

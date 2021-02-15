@@ -4,9 +4,9 @@ import {
   getAllUsers
 } from '../controllers/userController';
 
-const usersRouter = express.Router();
-usersRouter.get('/', (getAllUsers));
-usersRouter.post('/', (createUser));
+const userRouter = express.Router();
+
+userRouter.route('/').get(getAllUsers).post(createUser);
 // router.delete('/deleteUser', deleteUser);
 
-export default usersRouter;
+export default userRouter;
