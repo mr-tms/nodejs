@@ -10,8 +10,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
       .skip((Number(page) - 1) * Number(limit))
       .exec();
     
-    const count = await User.countDocuments()
-      .exec();
+    const count = await User.countDocuments().exec();
     
     res.status(200).json({
       users,
@@ -27,7 +26,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
   const userId = req.params.userId;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).exec();
     res.status(200).json({
       user
     });
@@ -53,7 +52,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
   const userId = req.params.userId;
   
   try {
-    await User.findByIdAndDelete(userId);
+    await User.findByIdAndDelete(userId).exec();
     res.status(204).json({ message: 'User has been deleted.'});
   } catch (error) {
     res.status(400).json({ message: error.message });
