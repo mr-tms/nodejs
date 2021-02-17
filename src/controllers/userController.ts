@@ -1,15 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/userModel';
-import { badRequestError } from '../utils/errors';
+import catchAsync from '../utils/catchAsync';
+import AppError from '../utils/appError';
 
-export const getAllUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getAllUsers = catchAsync (
+  async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   const { page = 1, limit = 10 } = req.query;
 
   const users = await User
     .find()
     .limit(Number(limit) * 1)
-    .skip((Number(page) - 1) * Number(limit))
-    .catch(error => badRequestError(error, next));
+    .skip((Number(page) - 1) * Number(limit));
   
   const count = await User.countDocuments().exec();
   
@@ -18,39 +19,38 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
     totalPages: Math.ceil(count / Number(limit)),
     currentPage: page
   });
-};
+});
 
-export const getUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const userId = req.params.userId;
-  const user = await User
-    .findById(userId)
-    .catch(error => badRequestError(error, next));
+  const user = await User.findById(userId);
   
-  if (user !== null) res.status(200).json({ user });
-  next();
-};
-
-export const createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const newUser = await User
-    .create(req.body)
-    .catch(error => badRequestError(error, next));
-  
-  if (newUser) {
-    res
-      .status(201)
-      .append('Location', `/api/v1/users/${newUser._id}`)
-      .end();
+  if (!user) {
+    return next(new AppError(`No user was found with id ${userId}`, 404));
   }
-};
 
-export const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  res.status(200).json({ user });
+});
+
+export const createUser = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+  const newUser = await User.create(req.body);
+
+  res
+  .status(201)
+  .append('Location', `/api/v1/users/${newUser._id}`)
+  .end();
+});
+
+export const deleteUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const userId = req.params.userId;
-  await User
-    .findByIdAndDelete(userId)
-    .catch(error => badRequestError(error, next));
+  const user = await User.findByIdAndDelete(userId);
+
+  if (!user) {
+    return next(new AppError(`No user was found with id ${userId}`, 404));
+  }
   
   res.status(204).json({ message: 'User has been deleted.'});
-};
-
-//https://www.robinwieruch.de/node-express-error-handling
-//https://wanago.io/2018/12/17/typescript-express-error-handling-validation/
+});
