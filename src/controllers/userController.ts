@@ -1,60 +1,56 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import User from '../models/userModel';
+import { badRequestError } from '../utils/errors';
 
-export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+export const getAllUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { page = 1, limit = 10 } = req.query;
 
-  try {
-    const users = await User.find()
-      .limit(Number(limit) * 1)
-      .skip((Number(page) - 1) * Number(limit))
-      .exec();
-    
-    const count = await User.countDocuments().exec();
-    
-    res.status(200).json({
-      users,
-      totalPages: Math.ceil(count / Number(limit)),
-      currentPage: page
-    });
-  } catch (error) {
-    res.json(error.message);
-  }
-};
-
-export const getUser = async (req: Request, res: Response): Promise<void> => {
-  const userId = req.params.userId;
-
-  try {
-    const user = await User.findById(userId).exec();
-    res.status(200).json({
-      user
-    });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-export const createUser = async (req: Request, res: Response): Promise<void> => {
-  const newUser = await User.create(req.body);
+  const users = await User
+    .find()
+    .limit(Number(limit) * 1)
+    .skip((Number(page) - 1) * Number(limit))
+    .catch(error => badRequestError(error, next));
   
-  try {
+  const count = await User.countDocuments().exec();
+  
+  res.status(200).json({
+    users,
+    totalPages: Math.ceil(count / Number(limit)),
+    currentPage: page
+  });
+};
+
+export const getUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const userId = req.params.userId;
+  const user = await User
+    .findById(userId)
+    .catch(error => badRequestError(error, next));
+  
+  if (user !== null) res.status(200).json({ user });
+  next();
+};
+
+export const createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const newUser = await User
+    .create(req.body)
+    .catch(error => badRequestError(error, next));
+  
+  if (newUser) {
     res
-      .append('Content-Location', `/api/v1/users/${newUser._id}`)
       .status(201)
+      .append('Location', `/api/v1/users/${newUser._id}`)
       .end();
-  } catch (error) {
-    res.json(error.message);
   }
 };
 
-export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+export const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const userId = req.params.userId;
+  await User
+    .findByIdAndDelete(userId)
+    .catch(error => badRequestError(error, next));
   
-  try {
-    await User.findByIdAndDelete(userId).exec();
-    res.status(204).json({ message: 'User has been deleted.'});
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
+  res.status(204).json({ message: 'User has been deleted.'});
 };
+
+//https://www.robinwieruch.de/node-express-error-handling
+//https://wanago.io/2018/12/17/typescript-express-error-handling-validation/
