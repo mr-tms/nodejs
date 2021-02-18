@@ -7,10 +7,10 @@ export const getAllUsers = catchAsync (
   async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
   const { page = 1, limit = 10 } = req.query;
 
-  const users = await User
-    .find()
-    .limit(Number(limit) * 1)
-    .skip((Number(page) - 1) * Number(limit));
+    const users = await User
+      .find()
+      .limit(Number(limit) * 1)
+      .skip((Number(page) - 1) * Number(limit)).exec();
   
   const count = await User.countDocuments().exec();
   
@@ -24,7 +24,7 @@ export const getAllUsers = catchAsync (
 export const getUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const userId = req.params.userId;
-  const user = await User.findById(userId);
+  const user = await User.findById(userId).exec();
   
   if (!user) {
     return next(new AppError(`No user was found with id ${userId}`, 404));
@@ -34,8 +34,12 @@ export const getUser = catchAsync(
 });
 
 export const createUser = catchAsync(
-  async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const newUser = await User.create(req.body);
+  
+  if (!newUser) {
+    return next(new AppError('Failed to create a user', 400))  
+  }
 
   res
   .status(201)
@@ -46,7 +50,7 @@ export const createUser = catchAsync(
 export const deleteUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const userId = req.params.userId;
-  const user = await User.findByIdAndDelete(userId);
+  const user = await User.findByIdAndDelete(userId).exec();
 
   if (!user) {
     return next(new AppError(`No user was found with id ${userId}`, 404));

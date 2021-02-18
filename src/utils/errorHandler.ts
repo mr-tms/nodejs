@@ -12,13 +12,13 @@ const sendError = (
     });
 };
 
-export default ((
+const globalHandler = (
   error: NodeJS.ErrnoException,
   _req: Request,
   res: Response,
   _next: NextFunction): Response | void => {
   
-  error.name = error.name || 'error'; 
-
   sendError(error, res);
-});
+};
+
+export default globalHandler;
