@@ -4,22 +4,25 @@ import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/appError';
 
 export const getAllUsers = catchAsync (
-  async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const { page = 1, limit = 10 } = req.query;
-
-    const users = await User
-      .find()
-      .limit(Number(limit) * 1)
-      .skip((Number(page) - 1) * Number(limit)).exec();
+  
+  const users = await User
+    .find()
+    .limit(Number(limit) * 1)
+    .skip((Number(page) - 1) * Number(limit)).exec();
+  
+  if (users.length === 0) {
+    return next(new AppError('No users were found', 404));
+  }
   
   const count = await User.countDocuments().exec();
-  
-  res.status(200).json({
-    users,
-    totalPages: Math.ceil(count / Number(limit)),
-    currentPage: page
-  });
-});
+  res
+    .status(200)
+    .append('X-Total-Count', `${count}`)
+    .json(users);
+  }
+);
 
 export const getUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
