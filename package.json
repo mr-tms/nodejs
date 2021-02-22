@@ -8,8 +8,7 @@
     "test": "npm test",
     "build": "rimraf ./build && tsc",
     "start:prod": "npm run build && node build/server.ts",
-    "lint": "eslint . --ext .ts",
-    "lint-and-fix": "eslint . --ext .ts --fix"
+    "lint": "eslint . --ext .ts"
   },
   "repository": {
     "type": "git",

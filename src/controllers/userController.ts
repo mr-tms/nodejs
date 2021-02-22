@@ -33,7 +33,7 @@ export const getUser = catchAsync(
     return next(new AppError(`No user was found with id ${userId}`, 404));
   }
 
-  res.status(200).json({ user });
+  res.status(200).json(user);
 });
 
 export const createUser = catchAsync(
@@ -59,5 +59,5 @@ export const deleteUser = catchAsync(
     return next(new AppError(`No user was found with id ${userId}`, 404));
   }
   
-  res.status(204).json({ message: 'User has been deleted.'});
+  res.sendStatus(204);
 });
