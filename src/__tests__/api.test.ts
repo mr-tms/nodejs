@@ -1,8 +1,9 @@
-import { Request } from 'supertest';
+import request from 'supertest';
 import app from '../app';
 
-describe('api endpoints', () => {
-  it('should create new entry', () => {
-    expect(true).toBe(true)
+describe('GET', () => {
+  it('should return entries', async () => {
+    const response = await request(app).get('/users');
+    console.log('RESP', response.body);
   })
 })

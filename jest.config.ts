@@ -5,7 +5,10 @@ const config: Config.InitialOptions = {
   verbose: true,
   testEnvironment: 'node',
   coveragePathIgnorePatterns: [
-    '/node_modules/'
+    '/node_modules/',
   ],
+  testPathIgnorePatterns: [
+    '/build/'
+  ]
 };
 export default config;
