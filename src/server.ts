@@ -10,7 +10,7 @@ mongoose.connect(`${process.env.DB_LOCALHOST}`, {
 }).then(() => console.log('DB connection successful.'));
 
 const port = process.env.PORT || 8081;
-export default app.listen(port, () => {
+app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
 
