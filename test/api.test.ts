@@ -1,4 +1,4 @@
-// import assert from 'assert';
+import assert from 'assert';
 import supertest from 'supertest';
 import app from '../src/app';
 import mongoose from 'mongoose';
@@ -21,10 +21,24 @@ describe('GET /users', () => {
     await userModel.create({
       firstName: 'Agent',
       lastName: 'Smith',
-      email: 'agentSmith@matrix.org'
-    });
+      email: 'agentsmith@matrix.org'
+    }, {
+      firstName: 'Agent2',
+      lastName: 'Smith2',
+      email: 'agentsmith2@matrix.org'});
 
     const response = await supertest(app).get('/api/v1/users');
-    console.log(response.body);
+
+    assert.ok(response);
+    assert.strictEqual(response.status, 200);
+    assert.strictEqual(response.body[0].firstName, 'Agent2');
+    assert.strictEqual(response.body.length, 2);
   });
+
+  it('should return 404 error if there are database entries', async () => {
+    const { body } = await supertest(app).get('/api/v1/users');
+
+    assert.strictEqual(body.error.statusCode, 404);
+    assert.strictEqual(body.message, 'No users were found');
+  })
 });
