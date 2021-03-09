@@ -31,8 +31,23 @@ describe('GET /users', () => {
 
     assert.ok(response);
     assert.strictEqual(response.status, 200);
+    assert.strictEqual(response.header['x-total-count'], '2');
     assert.strictEqual(response.body[0].firstName, 'Agent2');
     assert.strictEqual(response.body.length, 2);
+  });
+
+  it('should return database entry by :id', async () => {
+    await userModel.create({
+      firstName: 'Agent',
+      lastName: 'Smith',
+      email: 'agentsmith@matrix.org'
+    });
+
+    const { body } = await supertest(app).get('/api/v1/users');
+    const userId = body[0]._id;
+    const user = await supertest(app).get(`/api/v1/users/${userId}`);
+
+    assert.strictEqual(user.body.lastName, 'Smith');
   });
 
   it('should return 404 error if there are database entries', async () => {
