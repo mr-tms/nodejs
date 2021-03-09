@@ -3,8 +3,9 @@ import { Request, Response, NextFunction } from 'express';
 const sendError = (
   error: NodeJS.ErrnoException,
   res: Response
-  ) => {
-    return res.status(error.errno || 500).json({
+) => {
+  const errorCode = error.errno;
+    return res.status(errorCode || 500).json({
       status: error.code,
       error,
       message: error.message,

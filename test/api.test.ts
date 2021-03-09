@@ -50,10 +50,22 @@ describe('GET /users', () => {
     assert.strictEqual(user.body.lastName, 'Smith');
   });
 
-  it('should return 404 error if there are database entries', async () => {
+  it('should return 404 error if database entry id does not exist', async () => {
+    await userModel.create({
+      firstName: 'Agent',
+      lastName: 'Smith',
+      email: 'agentsmith@matrix.org'
+    });
+    
+    const { body } = await supertest(app).get('/api/v1/users/6047892981dbd56f9327a6c0');
+    assert.ok(body.error);
+    assert.strictEqual(body.error.errno, 404);
+  });
+
+  it('should return 404 error if there are no database entries', async () => {
     const { body } = await supertest(app).get('/api/v1/users');
 
-    assert.strictEqual(body.error.statusCode, 404);
+    assert.strictEqual(body.error.errno, 404);
     assert.strictEqual(body.message, 'No users were found');
   })
 });
